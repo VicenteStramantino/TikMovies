@@ -1,0 +1,8 @@
+.filters { display: flex; flex-direction: column; gap: 22px; margin: 32px 0; }
+.filters fieldset { margin: 0; padding: 0; border: 0; }
+.filters legend { display: block; margin-bottom: 9px; color: #858592; font-size: 12px; text-transform: uppercase; }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter-button { padding: 8px 12px; border: 1px solid #292932; border-radius: 5px; color: #a4a4af; background: transparent; font-size: 13px; cursor: pointer; }
+.filter-button.selected { color: #08080c; background: #00e5f5; border-color: #00e5f5; }
+.filter-button.selected.red { color: #fff; background: #ff3d63; border-color: #ff3d63; }
+.result-count { margin-bottom: 16px; color: #858592; font-size: 12px; }
