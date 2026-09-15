@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import 'boxicons/css/boxicons.min.css'
-import './Header.css'
 
 export type Screen = 'home' | 'explore' | 'lists' | 'detail'
 
@@ -21,11 +20,11 @@ function Header({ screen, onNav, searchQuery, onSearch }: HeaderProps) {
   const [showSearch, setShowSearch] = useState(false)
 
   function toggleSearch() {
-    setShowSearch(!showSearch)
-
     if (showSearch) {
       onSearch('')
     }
+
+    setShowSearch((isVisible) => !isVisible)
   }
 
   return (

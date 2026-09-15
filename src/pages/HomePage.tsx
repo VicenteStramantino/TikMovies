@@ -1,25 +1,33 @@
-import type { Movie } from '../../../data/movies'
-import MovieCard from '../../MovieCard/MovieCard'
-import './HomeScreen.css'
+import type { Movie } from '../data/movies'
+import MovieCard from '../components/MovieCard'
 
-type HomeScreenProps = {
+type HomePageProps = {
   watched: number[]
   favorites: number[]
+  toWatch: number[]
   onToggleWatched: (movie: Movie) => void
   onToggleFavorite: (movie: Movie) => void
+  onToggleToWatch: (movie: Movie) => void
   onSelect: (movie: Movie) => void
   movies: Movie[]
 }
 
-function HomeScreen({
+function HomePage({
   watched,
   favorites,
+  toWatch,
   onToggleWatched,
   onToggleFavorite,
+  onToggleToWatch,
   onSelect,
   movies,
-}: HomeScreenProps) {
+}: HomePageProps) {
   const hero = movies[0]
+  const heroWasWatched = watched.includes(hero.id)
+  const heroIsFavorite = favorites.includes(hero.id)
+  const heroIsOnWatchlist = toWatch.includes(hero.id)
+  const recommendedMovies = movies.slice(1, 5)
+  const highestRatedMovies = movies.slice().sort((firstMovie, secondMovie) => secondMovie.rating - firstMovie.rating)
 
   return (
     <div>
@@ -31,19 +39,23 @@ function HomeScreen({
           <div className="hero-actions">
             <button className="primary-button" type="button" onClick={() => onToggleWatched(hero)}>
               <i className="bx bx-show" aria-hidden="true" />
-              {watched.includes(hero.id) ? 'Já assisti' : 'Marcar como assistido'}
+              {heroWasWatched ? 'Já assisti' : 'Marcar como assistido'}
             </button>
             <button className="secondary-button" type="button" onClick={() => onToggleFavorite(hero)}>
-              <i className={favorites.includes(hero.id) ? 'bx bxs-heart' : 'bx bx-heart'} aria-hidden="true" />
-              {favorites.includes(hero.id) ? 'Favorito' : 'Favoritar'}
+              <i className={heroIsFavorite ? 'bx bxs-heart' : 'bx bx-heart'} aria-hidden="true" />
+              {heroIsFavorite ? 'Favorito' : 'Favoritar'}
+            </button>
+            <button className="secondary-button" type="button" onClick={() => onToggleToWatch(hero)}>
+              <i className={heroIsOnWatchlist ? 'bx bxs-bookmark-plus' : 'bx bx-bookmark-plus'} aria-hidden="true" />
+              {heroIsOnWatchlist ? 'Quero assistir' : 'Adicionar à lista'}
             </button>
           </div>
         </div>
       </section>
 
       <section className="content-section">
-        <MovieRow title="Recomendados" movies={movies.slice(1, 5)} onSelect={onSelect} />
-        <MovieRow title="Mais bem avaliados" movies={movies.slice().sort((a, b) => b.rating - a.rating)} onSelect={onSelect} />
+        <MovieRow title="Recomendados" movies={recommendedMovies} onSelect={onSelect} />
+        <MovieRow title="Mais bem avaliados" movies={highestRatedMovies} onSelect={onSelect} />
       </section>
     </div>
   )
@@ -68,4 +80,4 @@ function MovieRow({ title, movies, onSelect }: MovieRowProps) {
   )
 }
 
-export default HomeScreen
+export default HomePage
