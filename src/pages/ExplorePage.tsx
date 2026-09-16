@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Movie } from '../data/movies'
-import { decades, genres } from '../data/movies'
+import { genres } from '../data/movies'
 import MovieCard from '../components/MovieCard'
 
 type ExplorePageProps = {
@@ -11,10 +11,9 @@ type ExplorePageProps = {
 
 function ExplorePage({ movies, searchQuery, onSelect }: ExplorePageProps) {
   const [selectedGenre, setSelectedGenre] = useState('Todos')
-  const [selectedDecade, setSelectedDecade] = useState('Todas')
   const normalizedQuery = searchQuery.toLowerCase()
 
-  const filteredMovies = movies.filter((movie) => matchesFilters(movie, selectedGenre, selectedDecade, normalizedQuery))
+  const filteredMovies = movies.filter((movie) => matchesFilters(movie, selectedGenre, normalizedQuery))
 
   return (
     <section className="page-content">
@@ -32,16 +31,6 @@ function ExplorePage({ movies, searchQuery, onSelect }: ExplorePageProps) {
             ))}
           </div>
         </fieldset>
-        <fieldset>
-          <legend>Década</legend>
-          <div className="filter-buttons">
-            {decades.map((decade) => (
-              <button className={`${getFilterClassName(selectedDecade === decade)} red`} key={decade} type="button" onClick={() => setSelectedDecade(decade)}>
-                {decade}
-              </button>
-            ))}
-          </div>
-        </fieldset>
       </div>
 
       <p className="result-count">{filteredMovies.length} filmes encontrados</p>
@@ -53,12 +42,11 @@ function ExplorePage({ movies, searchQuery, onSelect }: ExplorePageProps) {
   )
 }
 
-function matchesFilters(movie: Movie, genre: string, decade: string, query: string) {
+function matchesFilters(movie: Movie, genre: string, query: string) {
   const matchesGenre = genre === 'Todos' || movie.genres.includes(genre)
-  const matchesDecade = decade === 'Todas' || movie.decade === decade
   const matchesSearch = movie.title.toLowerCase().includes(query) || movie.genres.some((movieGenre) => movieGenre.toLowerCase().includes(query))
 
-  return matchesGenre && matchesDecade && matchesSearch
+  return matchesGenre && matchesSearch
 }
 
 function getFilterClassName(isSelected: boolean) {

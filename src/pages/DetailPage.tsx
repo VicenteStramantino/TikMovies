@@ -89,6 +89,10 @@ function DetailPage({ movie, watched, favorites, toWatch, onToggleWatched, onTog
                 <strong className="movie-detail-label">Gêneros</strong>
                 <span className="movie-detail-value">{movie.genres.join(', ')}</span>
               </li>
+              <li>
+                <strong className="movie-detail-label">Onde assistir</strong>
+                <span className="movie-detail-value">{movie.streaming.join(', ')}</span>
+              </li>
             </ul>
           </section>
         </div>

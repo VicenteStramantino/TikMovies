@@ -217,6 +217,22 @@
   font-size: 12px;
 }
 
+.movie-streaming {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 7px !important;
+  color: #00e5f5 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-streaming i {
+  flex: 0 0 auto;
+  font-size: 14px;
+}
+
 .remove-button {
   position: absolute;
   top: 8px;
@@ -581,7 +597,7 @@
 
 .movie-details {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
   margin-top: 28px;
   padding: 20px 18px;

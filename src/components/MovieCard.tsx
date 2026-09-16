@@ -16,6 +16,9 @@ function MovieCard({ movie, onSelect, onRemove }: MovieCardProps) {
         <div className="movie-card-info">
           <h3>{movie.title}</h3>
           <p>{movie.year} · {movie.rating}</p>
+          <p className="movie-streaming" title={`Onde assistir: ${movie.streaming.join(', ')}`}>
+            <i className="bx bx-tv" aria-hidden="true" /> {movie.streaming.join(', ')}
+          </p>
         </div>
       </button>
       {onRemove && (
