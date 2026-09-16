@@ -5,68 +5,68 @@ export type Screen = 'home' | 'explore' | 'lists' | 'detail'
 
 type HeaderProps = {
   screen: Screen
-  onNav: (screen: Screen) => void
-  searchQuery: string
-  onSearch: (query: string) => void
+  aoNavegar: (screen: Screen) => void
+  busca: string
+  aoPesquisar: (texto: string) => void
 }
 
-const links: { name: string; screen: Screen }[] = [
-  { name: 'Início', screen: 'home' },
-  { name: 'Explorar', screen: 'explore' },
-  { name: 'Minhas listas', screen: 'lists' },
+const linksNavegacao: { nome: string; tela: Screen }[] = [
+  { nome: 'Início', tela: 'home' },
+  { nome: 'Explorar', tela: 'explore' },
+  { nome: 'Minhas listas', tela: 'lists' },
 ]
 
-function Header({ screen, onNav, searchQuery, onSearch }: HeaderProps) {
-  const [showSearch, setShowSearch] = useState(false)
+function Header({ screen, aoNavegar, busca, aoPesquisar }: HeaderProps) {
+  const [mostrarBusca, definirMostrarBusca] = useState(false)
 
-  function toggleSearch() {
-    if (showSearch) {
-      onSearch('')
+  function alternarBusca() {
+    if (mostrarBusca) {
+      aoPesquisar('')
     }
 
-    setShowSearch((isVisible) => !isVisible)
+    definirMostrarBusca((visivel) => !visivel)
   }
 
   return (
     <header className="site-header">
       <nav className="navbar" aria-label="Navegação principal">
-        <button className="brand" type="button" onClick={() => onNav('home')}>
+        <button className="brand" type="button" onClick={() => aoNavegar('home')}>
           <span className="brand-cyan">Tik</span>
           <span className="brand-red">Movies</span>
         </button>
 
         <div className="nav-links">
-          {links.map((link) => (
+          {linksNavegacao.map((link) => (
             <button
-              className={screen === link.screen ? 'nav-link active' : 'nav-link'}
-              key={link.screen}
+              className={screen === link.tela ? 'nav-link active' : 'nav-link'}
+              key={link.tela}
               type="button"
-              aria-current={screen === link.screen ? 'page' : undefined}
-              onClick={() => onNav(link.screen)}
+              aria-current={screen === link.tela ? 'page' : undefined}
+              onClick={() => aoNavegar(link.tela)}
             >
-              {link.name}
+              {link.nome}
             </button>
           ))}
         </div>
 
         <form className="search-area" role="search" onSubmit={(event) => event.preventDefault()}>
-          {showSearch && (
+          {mostrarBusca && (
             <input
               autoFocus
               aria-label="Buscar filmes"
               className="search-input"
               type="search"
-              value={searchQuery}
-              onChange={(event) => onSearch(event.target.value)}
+              value={busca}
+              onChange={(event) => aoPesquisar(event.target.value)}
               placeholder="Buscar filmes..."
             />
           )}
           <button
             className="search-button"
             type="button"
-            aria-label={showSearch ? 'Fechar busca' : 'Abrir busca'}
-            aria-expanded={showSearch}
-            onClick={toggleSearch}
+            aria-label={mostrarBusca ? 'Fechar busca' : 'Abrir busca'}
+            aria-expanded={mostrarBusca}
+            onClick={alternarBusca}
           >
             <i className="bx bx-search" aria-hidden="true"></i>
           </button>
