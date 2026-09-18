@@ -15,17 +15,7 @@ type PropriedadesExplorar = {
   onSelecionar: (filme: ResumoFilme) => void
 }
 
-function PaginaExplorar({
-  filmes,
-  busca,
-  generoSelecionado,
-  carregando,
-  erro,
-  temMais,
-  onMudarGenero,
-  onCarregarMais,
-  onSelecionar,
-}: PropriedadesExplorar) {
+function PaginaExplorar({ filmes, busca, generoSelecionado, carregando, erro, temMais, onMudarGenero, onCarregarMais, onSelecionar}: PropriedadesExplorar) {
   const filmesFiltrados = filmes.filter((filme) => generoSelecionado === 0 || filme.idsGeneros.includes(generoSelecionado))
   const temFiltro = generoSelecionado !== 0
   const mostrarCarregando = carregando ? filmes.length === 0 : false
@@ -71,9 +61,9 @@ function PaginaExplorar({
 
       <p className="contagem-resultados">{filmesFiltrados.length} filmes encontrados</p>
       {erro
-        ? <p className="mensagem-vazia">Nao foi possivel carregar os filmes. Verifique a chave da API do TMDB.</p>
+        ? <p className="mensagem-vazia">Erro interno. Verifique a chave da API do TMDB</p>
         : mostrarCarregando
-        ? <p className="mensagem-vazia">Carregando filmes...</p>
+        ? <p className="mensagem-vazia">Carregando...</p>
         : (
           <section className="grade-filmes" aria-label="Filmes encontrados">
             {filmesFiltrados.map((filme) => (
@@ -89,7 +79,7 @@ function PaginaExplorar({
         </button>
       ) : null}
 
-      {mostrarFimDosResultados ? <p className="contagem-resultados mensagem-final">Voce chegou ao fim dos resultados.</p> : null}
+      {mostrarFimDosResultados ? <p className="contagem-resultados mensagem-final">Não existem mais filmes para ver</p> : null}
     </section>
   )
 }
