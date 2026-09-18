@@ -1,36 +1,9 @@
-import type { Filme, ResumoFilme } from '../data/movies'
+import type { Filme, ResumoFilme } from '../models/movie'
+import type { FilmeDaApi, RespostaGenerosDaApi, RespostaListaDaApi } from '../models/tmdb'
 
 const ENDERECO_API = 'https://api.themoviedb.org/3'
 const ENDERECO_IMAGENS = 'https://image.tmdb.org/t/p'
 const CHAVE_API = import.meta.env.VITE_TMDB_API_TOKEN
-
-type FilmeDaApi = {
-  id: number
-  title: string
-  release_date?: string
-  vote_average?: number
-  genre_ids?: number[]
-  genres?: { id: number; name: string }[]
-  overview?: string
-  poster_path?: string | null
-  backdrop_path?: string | null
-  budget?: number
-  credits?: { crew?: { job: string; name: string }[] }
-  'watch/providers'?: {
-    results?: {
-      BR?: { flatrate?: { provider_id: number; provider_name: string }[] }
-    }
-  }
-}
-
-type RespostaLista = {
-  results: FilmeDaApi[]
-  total_pages: number
-}
-
-type RespostaGeneros = {
-  genres: { id: number; name: string }[]
-}
 
 const nomesDosGeneros: { [id: number]: string } = {}
 
@@ -40,7 +13,7 @@ function criarEnderecoDaImagem(caminho: string | null | undefined, tamanho: 'w50
 }
 
 async function buscarNaApi<T>(caminho: string): Promise<T> {
-  if (!CHAVE_API) throw new Error('Chave do TMDB não configurada')
+  if (!CHAVE_API) throw new Error('Chave do TMDB nao configurada')
 
   const resposta = await fetch(`${ENDERECO_API}${caminho}`, {
     headers: {
@@ -56,7 +29,7 @@ async function buscarNaApi<T>(caminho: string): Promise<T> {
 async function buscarNomesDosGeneros() {
   if (Object.keys(nomesDosGeneros).length > 0) return nomesDosGeneros
 
-  const resposta = await buscarNaApi<RespostaGeneros>('/genre/movie/list?language=pt-BR')
+  const resposta = await buscarNaApi<RespostaGenerosDaApi>('/genre/movie/list?language=pt-BR')
   for (const genero of resposta.genres) {
     nomesDosGeneros[genero.id] = genero.name
   }
@@ -117,7 +90,7 @@ function transformarEmFilme(filme: FilmeDaApi, nomesGeneros: { [id: number]: str
     ...resumo,
     avaliacao: Number((filme.vote_average ?? 0).toFixed(1)),
     generos,
-    descricao: filme.overview || 'Este filme ainda não possui uma descrição em português.',
+    descricao: filme.overview || 'Este filme ainda nao possui uma descricao em portugues.',
     fundo: criarEnderecoDaImagem(filme.backdrop_path, 'w1280') || criarEnderecoDaImagem(filme.poster_path, 'w1280'),
     plataformas: buscarPlataformas(filme),
     orcamento: filme.budget ?? 0,
@@ -126,13 +99,9 @@ function transformarEmFilme(filme: FilmeDaApi, nomesGeneros: { [id: number]: str
 }
 
 async function buscarLista(caminho: string) {
-  const resposta = await buscarNaApi<RespostaLista>(caminho)
+  const resposta = await buscarNaApi<RespostaListaDaApi>(caminho)
   const nomesGeneros = await buscarNomesDosGeneros()
-  const filmes: Filme[] = []
-
-  for (const filme of resposta.results) {
-    filmes.push(transformarEmFilme(filme, nomesGeneros))
-  }
+  const filmes = resposta.results.map((filme) => transformarEmFilme(filme, nomesGeneros))
 
   return {
     filmes,

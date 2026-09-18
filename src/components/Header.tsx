@@ -1,68 +1,65 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import 'boxicons/css/boxicons.min.css'
 
-export type Screen = 'home' | 'explore' | 'lists' | 'detail'
+type PropriedadesCabecalho ={
+  busca:  string
+  onPesquisar: (texto:string) => void
 
-type HeaderProps = {
-  screen: Screen
-  aoNavegar: (screen: Screen) => void
-  busca: string
-  aoPesquisar: (texto: string) => void
 }
 
-const linksNavegacao: { nome: string; tela: Screen }[] = [
-  { nome: 'Início', tela: 'home' },
-  { nome: 'Explorar', tela: 'explore' },
-  { nome: 'Minhas listas', tela: 'lists' },
+const linksNavegacao = [
+  {nome: 'Inicio', caminho: '/' },
+  {nome: 'Explorar', caminho: '/explorar' },
+  {nome: 'Minhas listas', caminho: '/listas' },
+  
 ]
 
-function Header({ screen, aoNavegar, busca, aoPesquisar }: HeaderProps) {
-  const [mostrarBusca, definirMostrarBusca] = useState(false)
+function Cabecalho({busca, onPesquisar}:PropriedadesCabecalho) {
+  const [mostrarBusca, definirMostrarBusca] =useState(false)
 
-  function alternarBusca() {
+  function alternarBusca(){
     if (mostrarBusca) {
-      aoPesquisar('')
+      onPesquisar('')
+    } else {
+      onPesquisar(busca)
     }
-
     definirMostrarBusca((visivel) => !visivel)
+
   }
 
   return (
-    <header className="site-header">
-      <nav className="navbar" aria-label="Navegação principal">
-        <button className="brand" type="button" onClick={() => aoNavegar('home')}>
-          <span className="brand-cyan">Tik</span>
-          <span className="brand-red">Movies</span>
-        </button>
 
-        <div className="nav-links">
+    <header className="cabecalho-site">
+      <nav className="barra-navegacao" aria-label="Navegacao principal">
+        <Link className="marca"  to="/">
+          <span className="marca-ciano">Tik</span>
+          <span className="marca-vermelha">Movies</span>
+        </Link>
+
+        <div className="links-navegacao">
           {linksNavegacao.map((link) => (
-            <button
-              className={screen === link.tela ? 'nav-link active' : 'nav-link'}
-              key={link.tela}
-              type="button"
-              aria-current={screen === link.tela ? 'page' : undefined}
-              onClick={() => aoNavegar(link.tela)}
-            >
+            <Link className="link-navegacao" key={link.caminho} to={link.caminho}>
               {link.nome}
-            </button>
+            </Link>
           ))}
         </div>
 
-        <form className="search-area" role="search" onSubmit={(event) => event.preventDefault()}>
-          {mostrarBusca && (
+        <form className="area-busca" role="search" onSubmit={(event) => event.preventDefault()}>
+          {mostrarBusca ? (
             <input
               autoFocus
               aria-label="Buscar filmes"
-              className="search-input"
+              className="entrada-busca"
               type="search"
               value={busca}
-              onChange={(event) => aoPesquisar(event.target.value)}
-              placeholder="Buscar filmes..."
+              onChange={(evento) =>onPesquisar(evento.target.value)}
+              placeholder="Buscar filme"
             />
-          )}
+          ) : null}
+
           <button
-            className="search-button"
+            className="botao-busca"
             type="button"
             aria-label={mostrarBusca ? 'Fechar busca' : 'Abrir busca'}
             aria-expanded={mostrarBusca}
@@ -75,5 +72,4 @@ function Header({ screen, aoNavegar, busca, aoPesquisar }: HeaderProps) {
     </header>
   )
 }
-
-export default Header
+export default Cabecalho

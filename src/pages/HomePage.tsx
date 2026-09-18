@@ -1,21 +1,34 @@
 import { useEffect, useState } from 'react'
-import type { Filme, ResumoFilme } from '../data/movies'
-import MovieCard from '../components/MovieCard'
+import type { Filme, ResumoFilme } from '../models/movie'
+import CartaoFilme from '../components/MovieCard'
 
-type HomePageProps = {
+type PropriedadesPaginaInicial = {
   filmes: Filme[]
   filmesRecomendados: Filme[]
+  erroCarregamento: boolean
   assistidos: ResumoFilme[]
   favoritos: ResumoFilme[]
   queroAssistir: ResumoFilme[]
-  aoAlternarAssistido: (filme: ResumoFilme) => void
-  aoAlternarFavorito: (filme: ResumoFilme) => void
-  aoAlternarQueroAssistir: (filme: ResumoFilme) => void
-  aoSelecionar: (filme: ResumoFilme) => void
-  aoExplorar: () => void
+  onAlternarAssistido: (filme: ResumoFilme) => void
+  onAlternarFavorito: (filme: ResumoFilme) => void
+  onAlternarQueroAssistir: (filme: ResumoFilme) => void
+  onSelecionar: (filme: ResumoFilme) => void
+  onExplorar: () => void
 }
 
-function HomePage({ filmes, filmesRecomendados, assistidos, favoritos, queroAssistir, aoAlternarAssistido, aoAlternarFavorito, aoAlternarQueroAssistir, aoSelecionar, aoExplorar }: HomePageProps) {
+function PaginaInicial({
+  filmes,
+  filmesRecomendados,
+  erroCarregamento,
+  assistidos,
+  favoritos,
+  queroAssistir,
+  onAlternarAssistido,
+  onAlternarFavorito,
+  onAlternarQueroAssistir,
+  onSelecionar,
+  onExplorar,
+}: PropriedadesPaginaInicial) {
   const [destaque, setDestaque] = useState<Filme | null>(null)
 
   useEffect(() => {
@@ -26,8 +39,12 @@ function HomePage({ filmes, filmesRecomendados, assistidos, favoritos, queroAssi
     return () => window.clearTimeout(timer)
   }, [filmes, assistidos])
 
+  if (erroCarregamento) {
+    return <p className="mensagem-vazia">Nao foi possivel carregar os filmes. Verifique a chave da API do TMDB.</p>
+  }
+
   if (!destaque) {
-    return <p className="empty-message">Carregando filmes...</p>
+    return <p className="mensagem-vazia">Carregando filmes...</p>
   }
 
   const destaqueFoiAssistido = assistidos.some((filme) => filme.id === destaque.id)
@@ -36,48 +53,52 @@ function HomePage({ filmes, filmesRecomendados, assistidos, favoritos, queroAssi
 
   return (
     <div>
-      <section className="hero" style={{ backgroundImage: `url(${destaque.fundo})` }}>
-        <div className="hero-content">
-          <p className="eyebrow">Filme em destaque</p>
+      <section className="destaque" style={{ backgroundImage: `url(${destaque.fundo})` }}>
+        <div className="conteudo-destaque">
+          <p className="subtitulo">Filme em destaque</p>
           <h1>{destaque.titulo}</h1>
           <p>{destaque.descricao}</p>
-          <div className="hero-actions">
-            <button className="primary-button" type="button" onClick={() => aoAlternarAssistido(destaque)}>
+          <div className="acoes-destaque">
+            <button className="botao-principal" type="button" onClick={() => onAlternarAssistido(destaque)}>
               <i className="bx bx-show" aria-hidden="true" />
-              {destaqueFoiAssistido ? 'Já assisti' : 'Marcar como assistido'}
+              {destaqueFoiAssistido ? 'Ja assisti' : 'Marcar como assistido'}
             </button>
-            <button className="secondary-button" type="button" onClick={() => aoAlternarFavorito(destaque)}>
+            <button className="botao-secundario" type="button" onClick={() => onAlternarFavorito(destaque)}>
               <i className={destaqueEhFavorito ? 'bx bxs-heart' : 'bx bx-heart'} aria-hidden="true" />
               {destaqueEhFavorito ? 'Favorito' : 'Favoritar'}
             </button>
-            <button className="secondary-button" type="button" onClick={() => aoAlternarQueroAssistir(destaque)}>
+            <button className="botao-secundario" type="button" onClick={() => onAlternarQueroAssistir(destaque)}>
               <i className={destaqueEstaNaLista ? 'bx bxs-bookmark-plus' : 'bx bx-bookmark-plus'} aria-hidden="true" />
-              {destaqueEstaNaLista ? 'Quero assistir' : 'Adicionar à lista'}
+              {destaqueEstaNaLista ? 'Quero assistir' : 'Adicionar a lista'}
             </button>
           </div>
         </div>
       </section>
 
-      <section className="content-section">
-        {filmesRecomendados.length > 0 && <MovieRow title="Recomendados para você" filmes={filmesRecomendados} aoSelecionar={aoSelecionar} />}
-        <MovieRow title="Mais bem avaliados" filmes={filmes} aoSelecionar={aoSelecionar} />
-        <button className="primary-button see-more-button" type="button" onClick={aoExplorar}>Ver mais</button>
+      <section className="secao-conteudo">
+        {filmesRecomendados.length > 0 ? <LinhaFilmes titulo="Recomendados para voce" filmes={filmesRecomendados} onSelecionar={onSelecionar} /> : null}
+        <LinhaFilmes titulo="Mais bem avaliados" filmes={filmes} onSelecionar={onSelecionar} />
+        <button className="botao-principal botao-ver-mais" type="button" onClick={onExplorar}>Ver mais</button>
       </section>
     </div>
   )
 }
 
-type MovieRowProps = { title: string; filmes: Filme[]; aoSelecionar: (filme: ResumoFilme) => void }
+type PropriedadesLinhaFilmes = {
+  titulo: string
+  filmes: Filme[]
+  onSelecionar: (filme: ResumoFilme) => void
+}
 
-function MovieRow({ title, filmes, aoSelecionar }: MovieRowProps) {
+function LinhaFilmes({ titulo, filmes, onSelecionar }: PropriedadesLinhaFilmes) {
   return (
-    <section className="movie-row" aria-label={title}>
-      <h2>{title}</h2>
-      <div className="movie-row-list">
-        {filmes.map((filme) => <MovieCard key={filme.id} filme={filme} aoSelecionar={aoSelecionar} />)}
+    <section className="linha-filmes" aria-label={titulo}>
+      <h2>{titulo}</h2>
+      <div className="lista-linha-filmes">
+        {filmes.map((filme) => <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />)}
       </div>
     </section>
   )
 }
 
-export default HomePage
+export default PaginaInicial

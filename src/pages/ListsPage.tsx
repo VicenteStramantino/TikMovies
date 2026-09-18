@@ -1,43 +1,73 @@
 import { useState } from 'react'
-import type { FilmeSalvo } from '../data/movies'
-import MovieCard from '../components/MovieCard'
+import type { FilmeSalvo } from '../models/movie'
+import CartaoFilme from '../components/MovieCard'
 
-type TipoLista = 'watched' | 'favorites' | 'toWatch'
+type TipoLista = 'assistidos' | 'favoritos' | 'queroAssistir'
 type PropriedadesListas = {
   assistidos: FilmeSalvo[]
   favoritos: FilmeSalvo[]
   queroAssistir: FilmeSalvo[]
-  aoAlternarAssistido: (filme: FilmeSalvo) => void
-  aoAlternarFavorito: (filme: FilmeSalvo) => void
-  aoAlternarQueroAssistir: (filme: FilmeSalvo) => void
-  aoSelecionar: (filme: FilmeSalvo) => void
+  onAlternarAssistido: (filme: FilmeSalvo) => void
+  onAlternarFavorito: (filme: FilmeSalvo) => void
+  onAlternarQueroAssistir: (filme: FilmeSalvo) => void
+  onSelecionar: (filme: FilmeSalvo) => void
 }
 
 const abas = [
-  { chave: 'watched', nome: 'Assistidos', icone: 'bx-show' },
-  { chave: 'favorites', nome: 'Favoritos', icone: 'bx-heart' },
-  { chave: 'toWatch', nome: 'Quero assistir', icone: 'bx-bookmark-plus' },
+  { chave: 'assistidos', nome: 'Assistidos', icone: 'bx-show' },
+  { chave: 'favoritos', nome: 'Favoritos', icone: 'bx-heart' },
+  { chave: 'queroAssistir', nome: 'Quero assistir', icone: 'bx-bookmark-plus' },
 ] as const
 
-function ListsPage({ assistidos, favoritos, queroAssistir, aoAlternarAssistido, aoAlternarFavorito, aoAlternarQueroAssistir, aoSelecionar }: PropriedadesListas) {
-  const [abaAtiva, definirAbaAtiva] = useState<TipoLista>('watched')
-  const listas = { watched: assistidos, favorites: favoritos, toWatch: queroAssistir }
+function PaginaListas({
+  assistidos,
+  favoritos,
+  queroAssistir,
+  onAlternarAssistido,
+  onAlternarFavorito,
+  onAlternarQueroAssistir,
+  onSelecionar,
+}: PropriedadesListas) {
+  const [abaAtiva, definirAbaAtiva] = useState<TipoLista>('assistidos')
+  const listas = { assistidos, favoritos, queroAssistir }
   const listaAtiva = listas[abaAtiva]
-  const aoRemover = { watched: aoAlternarAssistido, favorites: aoAlternarFavorito, toWatch: aoAlternarQueroAssistir }
+  const onRemover = { assistidos: onAlternarAssistido, favoritos: onAlternarFavorito, queroAssistir: onAlternarQueroAssistir }
 
   return (
-    <section className="page-content">
-      <p className="eyebrow">Sua coleção</p>
+    <section className="conteudo-pagina">
+      <p className="subtitulo">Sua colecao</p>
       <h1>Minhas listas</h1>
-      <div className="tabs" role="group" aria-label="Minhas listas">
-        {abas.map((aba) => <button className={`tab ${aba.chave === 'favorites' ? 'favorite' : ''} ${abaAtiva === aba.chave ? 'active' : ''}`} key={aba.chave} type="button" aria-pressed={abaAtiva === aba.chave} onClick={() => definirAbaAtiva(aba.chave)}><i className={`bx ${aba.icone}`} aria-hidden="true" /> {aba.nome} ({listas[aba.chave].length})</button>)}
+
+      <div className="abas" role="group" aria-label="Minhas listas">
+        {abas.map((aba) => (
+          <button
+            className={`aba ${aba.chave === 'favoritos' ? 'favorito' : ''} ${abaAtiva === aba.chave ? 'ativo' : ''}`}
+            key={aba.chave}
+            type="button"
+            aria-pressed={abaAtiva === aba.chave}
+            onClick={() => definirAbaAtiva(aba.chave)}
+          >
+            <i className={`bx ${aba.icone}`} aria-hidden="true" /> {aba.nome} ({listas[aba.chave].length})
+          </button>
+        ))}
       </div>
 
-      {listaAtiva.length > 0 ? <section className="movie-grid" aria-label="Filmes da lista selecionada">
-        {listaAtiva.map((filme) => <MovieCard key={filme.id} filme={filme} aoSelecionar={aoSelecionar} aoRemover={() => aoRemover[abaAtiva](filme)} />)}
-      </section> : <p className="empty-message">Sua lista está vazia</p>}
+      {listaAtiva.length > 0
+        ? (
+          <section className="grade-filmes" aria-label="Filmes da lista selecionada">
+            {listaAtiva.map((filme) => (
+              <CartaoFilme
+                key={filme.id}
+                filme={filme}
+                onSelecionar={onSelecionar}
+                onRemover={() => onRemover[abaAtiva](filme)}
+              />
+            ))}
+          </section>
+        )
+        : <p className="mensagem-vazia">Sua lista esta vazia</p>}
     </section>
   )
 }
 
-export default ListsPage
+export default PaginaListas

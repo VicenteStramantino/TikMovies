@@ -1,47 +1,67 @@
 import { useEffect } from 'react'
-import type { Filme, ResumoFilme } from '../data/movies'
-import { generos } from '../data/movies'
-import MovieCard from '../components/MovieCard'
+import type { Filme, ResumoFilme } from '../models/movie'
+import { generos } from '../data/genres'
+import CartaoFilme from '../components/MovieCard'
 
 type PropriedadesExplorar = {
   filmes: Filme[]
   busca: string
   generoSelecionado: number
   carregando: boolean
+  erro: boolean
   temMais: boolean
-  aoMudarGenero: (idGenero: number) => void
-  aoCarregarMais: () => void
-  aoSelecionar: (filme: ResumoFilme) => void
+  onMudarGenero: (idGenero: number) => void
+  onCarregarMais: () => void
+  onSelecionar: (filme: ResumoFilme) => void
 }
 
-function ExplorePage({ filmes, busca, generoSelecionado, carregando, temMais, aoMudarGenero, aoCarregarMais, aoSelecionar }: PropriedadesExplorar) {
+function PaginaExplorar({
+  filmes,
+  busca,
+  generoSelecionado,
+  carregando,
+  erro,
+  temMais,
+  onMudarGenero,
+  onCarregarMais,
+  onSelecionar,
+}: PropriedadesExplorar) {
   const filmesFiltrados = filmes.filter((filme) => generoSelecionado === 0 || filme.idsGeneros.includes(generoSelecionado))
   const temFiltro = generoSelecionado !== 0
+  const mostrarCarregando = carregando ? filmes.length === 0 : false
+  const mostrarNenhumFilme = erro ? false : carregando ? false : filmesFiltrados.length === 0
+  const mostrarBotaoCarregarMais = temFiltro ? temMais : false
+  const mostrarFimDosResultados = temMais ? false : filmes.length > 0
 
   useEffect(() => {
     if (temFiltro) return undefined
 
-    function aoRolar() {
+    function onRolar() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !carregando && temMais) {
-        aoCarregarMais()
+        onCarregarMais()
       }
     }
 
-    window.addEventListener('scroll', aoRolar)
-    return () => window.removeEventListener('scroll', aoRolar)
-  }, [temFiltro, temMais, carregando, aoCarregarMais])
+    window.addEventListener('scroll', onRolar)
+    return () => window.removeEventListener('scroll', onRolar)
+  }, [temFiltro, temMais, carregando, onCarregarMais])
 
   return (
-    <section className="page-content">
-      <p className="eyebrow">Catálogo TMDB</p>
-      <h1>{busca ? `Resultados para “${busca}”` : 'Explorar filmes'}</h1>
+    <section className="conteudo-pagina">
+      <p className="subtitulo">Catalogo TMDB</p>
+      <h1>{busca ? `Resultados para "${busca}"` : 'Explorar filmes'}</h1>
 
-      <div className="filters">
+      <div className="filtros">
         <fieldset>
-          <legend>Gênero</legend>
-          <div className="filter-buttons">
+          <legend>Genero</legend>
+          <div className="botoes-filtro">
             {generos.map((genero) => (
-              <button className={nomeClasseFiltro(generoSelecionado === genero.id)} key={genero.id} type="button" onClick={() => aoMudarGenero(genero.id)}>
+              <button
+                className={nomeClasseFiltro(generoSelecionado === genero.id)}
+                key={genero.id}
+                type="button"
+                onClick={() => onMudarGenero(genero.id)}
+              >
                 {genero.nome}
               </button>
             ))}
@@ -49,21 +69,33 @@ function ExplorePage({ filmes, busca, generoSelecionado, carregando, temMais, ao
         </fieldset>
       </div>
 
-      <p className="result-count">{filmesFiltrados.length} filmes encontrados</p>
-      {carregando && filmes.length === 0 ? <p className="empty-message">Carregando filmes...</p> : (
-        <section className="movie-grid" aria-label="Filmes encontrados">
-          {filmesFiltrados.map((filme) => <MovieCard key={filme.id} filme={filme} aoSelecionar={aoSelecionar} />)}
-        </section>
-      )}
-      {!carregando && filmesFiltrados.length === 0 && <p className="empty-message">Nenhum filme encontrado.</p>}
-      {temFiltro && temMais && <button className="primary-button load-more-button" type="button" onClick={aoCarregarMais} disabled={carregando}>{carregando ? 'Carregando...' : 'Carregar mais'}</button>}
-      {!temMais && filmes.length > 0 && <p className="result-count end-message">Você chegou ao fim dos resultados.</p>}
+      <p className="contagem-resultados">{filmesFiltrados.length} filmes encontrados</p>
+      {erro
+        ? <p className="mensagem-vazia">Nao foi possivel carregar os filmes. Verifique a chave da API do TMDB.</p>
+        : mostrarCarregando
+        ? <p className="mensagem-vazia">Carregando filmes...</p>
+        : (
+          <section className="grade-filmes" aria-label="Filmes encontrados">
+            {filmesFiltrados.map((filme) => (
+              <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />
+            ))}
+          </section>
+        )}
+
+      {mostrarNenhumFilme ? <p className="mensagem-vazia">Nenhum filme encontrado.</p> : null}
+      {mostrarBotaoCarregarMais ? (
+        <button className="botao-principal botao-carregar-mais" type="button" onClick={onCarregarMais} disabled={carregando}>
+          {carregando ? 'Carregando...' : 'Carregar mais'}
+        </button>
+      ) : null}
+
+      {mostrarFimDosResultados ? <p className="contagem-resultados mensagem-final">Voce chegou ao fim dos resultados.</p> : null}
     </section>
   )
 }
 
 function nomeClasseFiltro(estaSelecionado: boolean) {
-  return estaSelecionado ? 'filter-button selected' : 'filter-button'
+  return estaSelecionado ? 'botao-filtro selecionado' : 'botao-filtro'
 }
 
-export default ExplorePage
+export default PaginaExplorar
