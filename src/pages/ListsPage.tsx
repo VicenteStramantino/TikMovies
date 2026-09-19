@@ -38,7 +38,7 @@ function PaginaListas({
   for (const aba of abas) {
     botoesAbas.push(
       <button
-        className={`aba${aba.chave === 'favoritos' ? 'favorito' : ''}${abaAtiva === aba.chave ? 'ativo' : ''}`}
+        className={`aba ${aba.chave === 'favoritos' ? 'favorito' : ''} ${abaAtiva === aba.chave ? 'ativo' : ''}`}
         key={aba.chave}
         type="button"
         aria-pressed={abaAtiva === aba.chave}

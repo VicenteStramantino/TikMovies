@@ -1,75 +1,132 @@
-# React + TypeScript + Vite
+# tikMovies
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação acadêmica desenvolvida em React para ajudar usuários a organizar filmes que já assistiram, querem assistir ou marcaram como favoritos.
 
-Currently, two official plugins are available:
+## Integrantes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Preencher com o nome do integrante]
+- [Preencher com o nome do integrante]
 
-## React Compiler
+## Problema
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Muitas pessoas esquecem quais filmes já assistiram, quais ainda desejam assistir e onde podem encontrar determinados títulos.
 
-## Expanding the ESLint configuration
+## Solução
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+O tikMovies permite pesquisar filmes, consultar informações sobre cada título e organizar filmes em três listas pessoais:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Já assisti;
+- Quero assistir;
+- Favoritos.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+As listas são salvas no navegador do usuário. A aplicação também mostra recomendações baseadas nos filmes salvos e informações de disponibilidade para assistir no Brasil.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Funcionalidades
 
+- Pesquisa de filmes em tempo real;
+- Filtro por gênero;
+- Exibição do ano de lançamento;
+- Página com detalhes do filme;
+- Informações de nota, descrição, orçamento, produtores e plataformas de streaming;
+- Listas de filmes salvas localmente;
+- Recomendações baseadas nas listas do usuário;
+- Navegação entre páginas usando React Router;
+- Interface em modo escuro;
+- Mensagens de carregamento e erro durante as consultas à API.
+
+## Tecnologias utilizadas
+
+- React;
+- TypeScript;
+- Vite;
+- React Router;
+- CSS;
+- Boxicons;
+- API do TMDB;
+- LocalStorage do navegador.
+
+## API utilizada
+
+O projeto utiliza a [API do TMDB](https://www.themoviedb.org/documentation/api) para buscar filmes, gêneros, detalhes e informações sobre plataformas de streaming.
+
+A chave da API não deve ser colocada diretamente no código. Ela deve ficar em um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_TMDB_API_TOKEN=sua_chave_da_api
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Depois de criar ou alterar o arquivo `.env`, é necessário reiniciar o servidor do Vite.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Como executar o projeto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Instalar as dependências
 
+```bash
+npm install
 ```
+
+### 2. Configurar a chave da API
+
+Crie o arquivo `.env` na raiz do projeto e adicione:
+
+```env
+VITE_TMDB_API_TOKEN=sua_chave_da_api
+```
+
+### 3. Iniciar o projeto
+
+```bash
+npm run dev
+```
+
+Depois, acesse o endereço mostrado no terminal, normalmente `http://localhost:5173`.
+
+## Rotas principais
+
+| Rota | Descrição |
+|---|---|
+| `/` | Página inicial com destaque e recomendações |
+| `/explorar` | Pesquisa e filtros de filmes |
+| `/listas` | Listas pessoais do usuário |
+| `/filme/:id` | Detalhes de um filme específico |
+
+## Organização do projeto
+
+```text
+src/
+├── components/   Componentes reutilizáveis
+├── data/         Dados fixos da aplicação
+├── models/       Tipos utilizados no projeto
+├── pages/        Páginas das rotas
+├── services/     Comunicação com a API do TMDB
+├── App.tsx       Estado principal e estrutura da aplicação
+└── main.tsx      Configuração das rotas e inicialização do React
+```
+
+## Uso de inteligência artificial
+
+A inteligência artificial foi utilizada como apoio durante o desenvolvimento para:
+
+- Tirar dúvidas sobre React, TypeScript e CSS;
+- Ajudar na organização dos componentes;
+- Sugerir melhorias de estrutura e legibilidade;
+- Auxiliar na integração com a API do TMDB;
+- Revisar possíveis erros no código.
+
+As decisões sobre as funcionalidades, o visual e a organização final do projeto foram feitas pelo grupo. O código deve ser revisado e compreendido pelos integrantes antes da entrega.
+
+## Comandos disponíveis
+
+```bash
+npm run dev       # inicia o servidor de desenvolvimento
+npm run build     # cria a versão de produção
+npm run lint      # verifica problemas no código
+npm run preview   # visualiza a versão de produção
+```
+
+## Observações
+
+- O projeto não possui backend próprio ou banco de dados na nuvem;
+- As listas são armazenadas no LocalStorage do navegador;
+- O projeto não reproduz os filmes, apenas apresenta informações e plataformas disponíveis;
+- O arquivo `.env` não deve ser enviado para o GitHub.
