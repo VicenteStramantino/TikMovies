@@ -73,7 +73,7 @@ function PaginaExplorar({ filmes, busca, generoSelecionado, carregando, erro, te
 
       <p className="contagem-resultados">{filmesFiltrados.length} filmes encontrados</p>
       {erro
-        ? <p className="mensagem-vazia">Erro interno. Verifique a chave da API do TMDB</p>
+        ? <p className="mensagem-vazia">Erro interno. Verifique a chave da API</p>
         : mostrarCarregando
         ? <p className="mensagem-vazia">Carregando...</p>
         : (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router'
 import 'boxicons/css/boxicons.min.css'
-import Cabecalho from './components/Header'
+import Header from './components/Header'
 import PaginaDetalhes from './pages/DetailPage'
 import PaginaExplorar from './pages/ExplorePage'
 import PaginaInicial from './pages/HomePage'
@@ -29,7 +29,7 @@ function EstruturaPrincipal() {
 
   return (
     <div className="aplicativo">
-      <Cabecalho busca={busca} onPesquisar={pesquisar} />
+      <Header busca={busca} onPesquisar={pesquisar} />
       <main className="conteudo-principal">
         <Outlet />
       </main>

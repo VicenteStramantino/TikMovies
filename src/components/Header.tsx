@@ -8,16 +8,17 @@ type PropriedadesCabecalho ={
 
 }
 
-const linksNavegacao = [
-  {nome: 'Inicio', caminho: '/' },
-  {nome: 'Explorar', caminho: '/explorar' },
-  {nome: 'Minhas listas', caminho: '/listas' },
+function Header({busca, onPesquisar}:PropriedadesCabecalho) {
   
-]
-
-function Cabecalho({busca, onPesquisar}:PropriedadesCabecalho) {
-  const [mostrarBusca, definirMostrarBusca] =useState(false)
+  const [mostrarBusca, definirMostrarBusca] = useState(false)
   const links: ReactNode[] = []
+
+  const linksNavegacao = [
+    {nome: 'Inicio', caminho: '/' },
+    {nome: 'Explorar', caminho: '/explorar' },
+    {nome: 'Minhas listas', caminho: '/listas' },  
+
+  ]
 
   for (const link of linksNavegacao) {
     links.push(
@@ -73,8 +74,9 @@ function Cabecalho({busca, onPesquisar}:PropriedadesCabecalho) {
             <i className="bx bx-search" aria-hidden="true"></i>
           </button>
         </form>
+
       </nav>
     </header>
   )
 }
-export default Cabecalho
+export default Header
