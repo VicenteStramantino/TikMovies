@@ -42,7 +42,12 @@ function transformarEmResumo(filme: FilmeDaApi): ResumoFilme {
 
   let idsGeneros: number[] = []
   if (filme.genre_ids) idsGeneros = filme.genre_ids
-  if (filme.genres) idsGeneros = filme.genres.map((genero) => genero.id)
+  if (filme.genres) {
+    idsGeneros = []
+    for (const genero of filme.genres) {
+      idsGeneros.push(genero.id)
+    }
+  }
 
   return {
     id: filme.id,
@@ -101,7 +106,10 @@ function transformarEmFilme(filme: FilmeDaApi, nomesGeneros: { [id: number]: str
 async function buscarLista(caminho: string) {
   const resposta = await buscarNaApi<RespostaListaDaApi>(caminho)
   const nomesGeneros = await buscarNomesDosGeneros()
-  const filmes = resposta.results.map((filme) => transformarEmFilme(filme, nomesGeneros))
+  const filmes: Filme[] = []
+  for (const filme of resposta.results) {
+    filmes.push(transformarEmFilme(filme, nomesGeneros))
+  }
 
   return {
     filmes,

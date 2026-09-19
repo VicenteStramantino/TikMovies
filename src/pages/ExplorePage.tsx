@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import type { Filme, ResumoFilme } from '../models/movie'
 import { generos } from '../data/genres'
 import CartaoFilme from '../components/MovieCard'
@@ -22,6 +22,27 @@ function PaginaExplorar({ filmes, busca, generoSelecionado, carregando, erro, te
   const mostrarNenhumFilme = erro ? false : carregando ? false : filmesFiltrados.length === 0
   const mostrarBotaoCarregarMais = temFiltro ? temMais : false
   const mostrarFimDosResultados = temMais ? false : filmes.length > 0
+  const botoesGeneros: ReactNode[] = []
+  const cartoesFilmes: ReactNode[] = []
+
+  for (const genero of generos) {
+    botoesGeneros.push(
+      <button
+        className={nomeClasseFiltro(generoSelecionado === genero.id)}
+        key={genero.id}
+        type="button"
+        onClick={() => onMudarGenero(genero.id)}
+      >
+        {genero.nome}
+      </button>,
+    )
+  }
+
+  for (const filme of filmesFiltrados) {
+    cartoesFilmes.push(
+      <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />,
+    )
+  }
 
   useEffect(() => {
     if (temFiltro) return undefined
@@ -45,16 +66,7 @@ function PaginaExplorar({ filmes, busca, generoSelecionado, carregando, erro, te
         <fieldset>
           <legend>Genero</legend>
           <div className="botoes-filtro">
-            {generos.map((genero) => (
-              <button
-                className={nomeClasseFiltro(generoSelecionado === genero.id)}
-                key={genero.id}
-                type="button"
-                onClick={() => onMudarGenero(genero.id)}
-              >
-                {genero.nome}
-              </button>
-            ))}
+            {botoesGeneros}
           </div>
         </fieldset>
       </div>
@@ -66,9 +78,7 @@ function PaginaExplorar({ filmes, busca, generoSelecionado, carregando, erro, te
         ? <p className="mensagem-vazia">Carregando...</p>
         : (
           <section className="grade-filmes" aria-label="Filmes encontrados">
-            {filmesFiltrados.map((filme) => (
-              <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />
-            ))}
+            {cartoesFilmes}
           </section>
         )}
 

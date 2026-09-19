@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import type { Filme } from '../models/movie'
 
 type PropriedadesDetalhes = {
@@ -14,6 +15,11 @@ type PropriedadesDetalhes = {
 function PaginaDetalhes({ filme, assistido, favorito, estaNaLista, onAlternarAssistido, onAlternarFavorito, onAlternarQueroAssistir, onVoltar }: PropriedadesDetalhes) {
   const streaming = filme.plataformas.length > 0 ? filme.plataformas.join(', ') : 'Nenhum streaming encontrado'
   const orcamento = filme.orcamento > 0 ? `$ ${filme.orcamento.toLocaleString('en-US')}` : 'Não informado'
+  const itensGeneros: ReactNode[] = []
+
+  for (const genero of filme.generos) {
+    itensGeneros.push(<li key={genero}>{genero}</li>)
+  }
   
   return (
     <section className="pagina-detalhes">
@@ -54,7 +60,7 @@ function PaginaDetalhes({ filme, assistido, favorito, estaNaLista, onAlternarAss
 
           <section className="informacoes-detalhes" aria-labelledby="titulo-filme">
             <ul className="lista-generos" aria-label="Generos">
-              {filme.generos.map((genero) => <li key={genero}>{genero}</li>)}
+              {itensGeneros}
             </ul>
 
             <h1 id="titulo-filme">{filme.titulo}</h1>

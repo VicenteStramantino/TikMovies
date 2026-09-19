@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import type { Filme, ResumoFilme } from '../models/movie'
 import CartaoFilme from '../components/MovieCard'
 
 type PropriedadesPaginaInicial = {
-  filmes: Filme[]
+  filmes:Filme[]
   filmesRecomendados: Filme[]
   erroCarregamento: boolean
   assistidos: ResumoFilme[]
   favoritos: ResumoFilme[]
   queroAssistir: ResumoFilme[]
   onAlternarAssistido: (filme: ResumoFilme) => void
-  onAlternarFavorito: (filme: ResumoFilme) => void
+  onAlternarFavorito:(filme: ResumoFilme) => void
   onAlternarQueroAssistir: (filme: ResumoFilme) => void
-  onSelecionar: (filme: ResumoFilme) => void
-  onExplorar: () => void
+  onSelecionar: (filme : ResumoFilme) => void
+  onExplorar: ()=> void
 }
 
 function PaginaInicial({
@@ -28,28 +28,28 @@ function PaginaInicial({
   onAlternarQueroAssistir,
   onSelecionar,
   onExplorar,
-}: PropriedadesPaginaInicial) {
+}:PropriedadesPaginaInicial){
   const [destaque, setDestaque] = useState<Filme | null>(null)
 
-  useEffect(() => {
-    const filmesDisponiveis = filmes.filter((filme) => !assistidos.some((filmeSalvo) => filmeSalvo.id === filme.id))
-    const timer = window.setTimeout(() => {
-      setDestaque(filmesDisponiveis[Math.floor(Math.random() * filmesDisponiveis.length)] ?? filmes[0] ?? null)
+  useEffect(() =>{
+    const filmesDisponiveis = filmes.filter((filme) => !assistidos.some((filmeSalvo) =>filmeSalvo.id=== filme.id))
+    const timer = window.setTimeout(()=>{
+      setDestaque(filmesDisponiveis[Math.floor(Math.random() *filmesDisponiveis.length)]?? filmes[0]?? null)
     })
-    return () => window.clearTimeout(timer)
-  }, [filmes, assistidos])
-
+    return() => window.clearTimeout(timer)
+  }, [filmes,assistidos])
   if (erroCarregamento) {
-    return <p className="mensagem-vazia">Nao foi possivel carregar os filmes. Verifique a chave da API do TMDB.</p>
+    return <p className="mensagem-vazia">Nao foi possivel carregar os filmes</p>
   }
 
+  
   if (!destaque) {
-    return <p className="mensagem-vazia">Carregando filmes...</p>
+    return <p className="mensagem-vazia">Carregando filmes</p>
   }
 
-  const destaqueFoiAssistido = assistidos.some((filme) => filme.id === destaque.id)
-  const destaqueEhFavorito = favoritos.some((filme) => filme.id === destaque.id)
-  const destaqueEstaNaLista = queroAssistir.some((filme) => filme.id === destaque.id)
+  const destaqueFoiAssistido = assistidos.some((filme) => filme.id ===destaque.id)
+  const destaqueEhFavorito = favoritos.some((filme) => filme.id=== destaque.id)
+  const destaqueEstaNaLista =queroAssistir.some((filme) => filme.id === destaque.id)
 
   return (
     <div>
@@ -74,10 +74,18 @@ function PaginaInicial({
           </div>
         </div>
       </section>
-
       <section className="secao-conteudo">
-        {filmesRecomendados.length > 0 ? <LinhaFilmes titulo="Recomendados para voce" filmes={filmesRecomendados} onSelecionar={onSelecionar} /> : null}
-        <LinhaFilmes titulo="Mais bem avaliados" filmes={filmes} onSelecionar={onSelecionar} />
+        {
+        filmesRecomendados.length > 0? 
+        <LinhaFilmes 
+        titulo="Recomendados para voce" 
+        filmes={filmesRecomendados} 
+        onSelecionar={onSelecionar}/>: null
+        }
+        <LinhaFilmes 
+        titulo="Mais bem avaliados" 
+        filmes={filmes} 
+        onSelecionar={onSelecionar}/>
         <button className="botao-principal botao-ver-mais" type="button" onClick={onExplorar}>Ver mais</button>
       </section>
     </div>
@@ -91,11 +99,19 @@ type PropriedadesLinhaFilmes = {
 }
 
 function LinhaFilmes({ titulo, filmes, onSelecionar }: PropriedadesLinhaFilmes) {
+  const cartoesFilmes: ReactNode[] = []
+
+  for (const filme of filmes) {
+    cartoesFilmes.push(
+      <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />,
+    )
+  }
+
   return (
     <section className="linha-filmes" aria-label={titulo}>
       <h2>{titulo}</h2>
       <div className="lista-linha-filmes">
-        {filmes.map((filme) => <CartaoFilme key={filme.id} filme={filme} onSelecionar={onSelecionar} />)}
+        {cartoesFilmes}
       </div>
     </section>
   )

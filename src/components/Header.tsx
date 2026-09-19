@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Link } from 'react-router'
 import 'boxicons/css/boxicons.min.css'
 
@@ -17,6 +17,15 @@ const linksNavegacao = [
 
 function Cabecalho({busca, onPesquisar}:PropriedadesCabecalho) {
   const [mostrarBusca, definirMostrarBusca] =useState(false)
+  const links: ReactNode[] = []
+
+  for (const link of linksNavegacao) {
+    links.push(
+      <Link className="link-navegacao" key={link.caminho} to={link.caminho}>
+        {link.nome}
+      </Link>,
+    )
+  }
 
   function alternarBusca(){
     if (mostrarBusca) {
@@ -38,11 +47,7 @@ function Cabecalho({busca, onPesquisar}:PropriedadesCabecalho) {
         </Link>
 
         <div className="links-navegacao">
-          {linksNavegacao.map((link) => (
-            <Link className="link-navegacao" key={link.caminho} to={link.caminho}>
-              {link.nome}
-            </Link>
-          ))}
+          {links}
         </div>
 
         <form className="area-busca" role="search" onSubmit={(event) => event.preventDefault()}>
