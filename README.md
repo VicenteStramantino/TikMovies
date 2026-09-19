@@ -2,10 +2,12 @@
 
 Aplicação acadêmica desenvolvida em React para ajudar usuários a organizar filmes que já assistiram, querem assistir ou marcaram como favoritos.
 
+Link do Vercel: https://tikmovies.vercel.app/
+
 ## Integrantes
 
-- [Preencher com o nome do integrante]
-- [Preencher com o nome do integrante]
+- Vicente Stramanantino
+- Bianca Vitória Veloso
 
 ## Problema
 
@@ -118,15 +120,6 @@ As decisões sobre as funcionalidades, o visual e a organização final do proje
 ## Comandos disponíveis
 
 ```bash
-npm run dev       # inicia o servidor de desenvolvimento
-npm run build     # cria a versão de produção
-npm run lint      # verifica problemas no código
-npm run preview   # visualiza a versão de produção
+npm i
+npm run dev
 ```
-
-## Observações
-
-- O projeto não possui backend próprio ou banco de dados na nuvem;
-- As listas são armazenadas no LocalStorage do navegador;
-- O projeto não reproduz os filmes, apenas apresenta informações e plataformas disponíveis;
-- O arquivo `.env` não deve ser enviado para o GitHub.
